@@ -1,6 +1,7 @@
 FROM golang:1.16
 WORKDIR /app/gohttpserver
 ADD . /app/gohttpserver
+RUN go env -w GOPROXY=https://mirrors.aliyun.com/goproxy/,direct
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-X main.VERSION=docker' -o gohttpserver
 
 FROM debian:stretch
@@ -12,4 +13,4 @@ ADD assets ./assets
 COPY --from=0 /app/gohttpserver/gohttpserver .
 EXPOSE 8000
 ENTRYPOINT [ "/app/gohttpserver", "--root=/app/public" ]
-CMD []
+CMD ["--upload"]
